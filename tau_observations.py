@@ -62,7 +62,7 @@ def build_observations(
     if fidelity == 'hour':
         pool_data: PoolHistory = UniswapV3EthereumPoolHourDataLoader(
             api_key, pool_address, loader_type=LoaderType.CSV).read(with_run=True)
-        binance_prices: PriceHistory = BinanceHourPriceLoader(ticker, loader_type=LoaderType.CSV).read(with_run=False)
+        binance_prices: PriceHistory = BinanceHourPriceLoader(ticker, loader_type=LoaderType.CSV).read(with_run=True)
     elif fidelity == 'minute':
         pool_data: PoolHistory = UniswapV3EthereumPoolMinuteDataLoader(
             api_key, pool_address, loader_type=LoaderType.CSV).read(with_run=True)

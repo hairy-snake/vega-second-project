@@ -1,4 +1,3 @@
-
 import os
 import warnings
 warnings.filterwarnings('ignore')
@@ -11,16 +10,17 @@ from sklearn.model_selection import ParameterGrid
 from fractal.core.pipeline import (
     DefaultPipeline, MLFlowConfig, ExperimentConfig)
 
-from atr_tau_strategy import ATRTauResetStrategy
+from atr_tau_strategy import ATRTauResetStrategy, ATRTauResetParams
 from tau_observations import build_observations
 
 
 def build_grid():
     return ParameterGrid({
-        'TAU': np.ndarray([10]),
-        'MAX_TAU': np.linspace(start=15, stop=20, num=20, dtype=int),
-        'MIN_TAU': np.linspace(start=1, stop=7, num=7, dtype=int),
-        'ATR_PERIOD': np.linspace(start=10, stop=20, num=20, dtype=int),
+        'TAU': np.arange(start=8, stop=15, step=1, dtype=int),
+        'MIN_TAU': [5.0],
+        'MAX_TAU': [20.0],
+        'ATR_PERIOD': [14, 24],
+        'TAU_SCALING_FACTOR': [1.2, 1.5, 1.8],
         'INITIAL_BALANCE': [1_000_000]
     })
 
@@ -29,8 +29,8 @@ if __name__ == '__main__':
     THE_GRAPH_API_KEY = os.getenv("THE_GRAPH_API_KEY")
     ticker: str = 'ETHUSDT'
     pool_address: str = '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
-    start_time = datetime(2024, 7, 1, tzinfo=UTC)
-    end_time = datetime(2024, 9, 30, tzinfo=UTC)
+    start_time = datetime(2024, 1, 1, tzinfo=UTC)
+    end_time = datetime(2025, 1, 1, tzinfo=UTC)
     fidelity = 'hour'
     experiment_name = f'atr_rtau_{fidelity}_{ticker}_{pool_address}_{start_time.strftime("%Y-%m-%d")}_{end_time.strftime("%Y-%m-%d")}'
     ATRTauResetStrategy.token0_decimals = 6
