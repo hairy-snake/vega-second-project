@@ -1,0 +1,6 @@
+.env
+mlruns
+runs
+fractal_data
+__pycache__
+.venv
