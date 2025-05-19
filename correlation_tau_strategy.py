@@ -5,8 +5,8 @@ from collections import deque
 
 from fractal.core.base import (Action, ActionToTake, BaseStrategy,
                                BaseStrategyParams, NamedEntity, Observation)
-from fractal.core.entities import UniswapV3LPConfig, UniswapV3LPEntity
-
+from fractal.core.entities import UniswapV3LPGlobalState, UniswapV3LPEntity, UniswapV3LPConfig
+from fractal.core.base import GlobalState
 
 @dataclass
 class CorrelationTauParams(BaseStrategyParams):

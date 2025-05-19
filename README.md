@@ -64,6 +64,7 @@ Strategy adjusts position ranges based on correlations between the pool asset an
 ### Evaluation Metrics
 - Fee generation
 - Rebalancing frequency and associated penalties
+- Observation -- can strategy "survive" high volatility periods
 - All standard backtest metrics(sharpe, drawdown, pnl, etc)
 
 ## Experimental Setup
@@ -72,8 +73,26 @@ All strategies were evaluated using the MLflow experimentation platform. For eac
 ## Results
 
 ### Strategy Performance Comparison
-![Basic Tau-Reset](./images/basic_report.png)
-[Some Images]
+#### Basic Tau-Reset
+
+![Basic Tau-Reset](./images/basic_positions.png)
+![Basic Tau-Reset](./images/basic_fees.png)
+#### ATR Tau-Reset
+![ATR Tau-Reset](./images/atr_positions.png)
+![ATR Tau-Reset](./images/atr_fees.png)
+![ATR Tau-Reset](./images/atr_summary.png)
+
+#### Timed + Smoothed Tau-Reset
+![Timed Tau-Reset](./images/timed_positions.png)
+![Timed Tau-Reset](./images/timed_fees.png)
+![Timed Tau-Reset](./images/timed_summary.png)
+
+#### Distribution Positions Tau-Reset
+
+
+
+#### Correlation Tau-Reset
+
 
 
 
@@ -92,7 +111,7 @@ All strategies were evaluated using the MLflow experimentation platform. For eac
 
 ## Limitations
 
-- Limited historical data (only Q1 2024)
+- Limited historical data (only Q1 2024). With this limitation parameter optimizing is faster and(i think) not much less accurate
 - Gas fees not fully accounted for in the simulation
 - Slippage effects not modeled
 - Limited to specific Uniswap V3 pools

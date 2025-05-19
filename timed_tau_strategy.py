@@ -62,17 +62,14 @@ class TimedTauResetStrategy(BaseStrategy):
 
     def _update_indicators(self, current_price: float):
         """Update EMA and custom volatility indicator."""
-        # Update price history
         self.price_history.append(current_price)
         
-        # Calculate EMA
         if len(self.price_history) == 1:
             self.ema = current_price
         else:
             alpha = 2 / (self._params.EMA_PERIOD + 1)
             self.ema = alpha * current_price + (1 - alpha) * self.ema
         
-        # Calculate custom volatility indicator (standard deviation of recent returns)
         if len(self.price_history) >= 10:  # Need at least 10 points for meaningful volatility
             returns = np.diff(np.log(self.price_history[-10:]))
             self.volatility_indicator = np.std(returns)
@@ -83,35 +80,28 @@ class TimedTauResetStrategy(BaseStrategy):
         """Main strategy logic with enhanced rebalancing conditions."""
         self.iteration_count += 1
         
-        # Retrieve the pool state
         uniswap_entity: UniswapV3LPEntity = self.get_entity('UNISWAP_V3')
         global_state = uniswap_entity.global_state
         current_price = global_state.price
         
-        # Update indicators
         self._update_indicators(current_price)
         
-        # Initial deposit if needed
         if not uniswap_entity.is_position and not self.deposited_initial_funds:
             self._debug("No active position. Depositing initial funds...")
             self.deposited_initial_funds = True
             return self._deposit_to_lp()
 
-        # Check if we need to rebalance
         should_rebalance = False
         rebalance_reason = ""
         
-        # Condition 1: No active position
         if not uniswap_entity.is_position:
             should_rebalance = True
             rebalance_reason = "no active position"
         
-        # Condition 2: Periodic rebalance every delta iterations
         elif self.iteration_count % self._params.REBALANCE_DELTA == 0:
             should_rebalance = True
             rebalance_reason = f"periodic rebalance (every {self._params.REBALANCE_DELTA} iterations)"
         
-        # Condition 3: Emergency rebalance if price moves too far from EMA
         elif self.ema is not None:
             price_deviation = abs(current_price - self.ema) / self.ema
             if price_deviation > (self._params.EMERGENCY_REBALANCE_THRESHOLD - 1):
@@ -136,18 +126,15 @@ class TimedTauResetStrategy(BaseStrategy):
         actions = []
         entity: UniswapV3LPEntity = self.get_entity('UNISWAP_V3')
 
-        # Close existing position if it exists
         if entity.is_position and entity.internal_state.liquidity > 0:
             actions.append(ActionToTake(entity_name='UNISWAP_V3', action=Action(action='close_position', args={})))
             self._debug("Closed existing position.")
 
-        # Calculate new range based on EMA (fall back to current price if EMA not available)
-        reference_price = self.ema if self.ema is not None else entity.global_state.price
+        # Use current price as reference to ensure range includes it
+        reference_price = entity.global_state.price
         tau = self._params.TAU
         
-        # Adjust tau based on volatility if we have enough data
         if self.volatility_indicator is not None:
-            # Scale tau inversely with volatility (more volatile -> narrower range)
             volatility_adjustment = 1 / (1 + self.volatility_indicator * 10)  # Empirical scaling
             tau *= volatility_adjustment
             self._debug(f"Volatility-adjusted tau: {tau:.4f} (raw: {self._params.TAU})")
@@ -156,7 +143,6 @@ class TimedTauResetStrategy(BaseStrategy):
         price_lower = reference_price * 1.0001 ** (-tau * tick_spacing)
         price_upper = reference_price * 1.0001 ** (tau * tick_spacing)
 
-        # Open new position
         delegate_get_cash = lambda obj: obj.get_entity('UNISWAP_V3').internal_state.cash
         actions.append(ActionToTake(
             entity_name='UNISWAP_V3',

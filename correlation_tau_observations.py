@@ -13,8 +13,8 @@ from fractal.loaders.thegraph.uniswap_v3 import (
 from fractal.loaders.binance import BinanceHourPriceLoader, BinanceMinutePriceLoader
 from fractal.loaders.structs import PriceHistory, PoolHistory
 
-from fractal.core.base import Observation
-from fractal.core.entities import UniswapV3LPGlobalState, GlobalState
+from fractal.core.base import Observation, GlobalState
+from fractal.core.entities import UniswapV3LPGlobalState
 from correlation_tau_strategy import CorrelationTauStrategy, CorrelationTauParams
 
 # Load environment variables

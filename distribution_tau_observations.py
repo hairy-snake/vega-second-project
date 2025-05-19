@@ -104,13 +104,14 @@ if __name__ == '__main__':
         THE_GRAPH_API_KEY, loader_type=LoaderType.CSV).get_pool_decimals(pool_address)
         
     params = DistributionTauParams(
-        BASE_TAU=10.0,
+        BASE_TAU=4.0,  # Tighter base range for better fee concentration
         INITIAL_BALANCE=1_000_000,
-        NUM_POSITIONS=3,
+        NUM_POSITIONS=3,  # Multiple conceptual positions for normal distribution
         USE_ATR=True,
         ATR_PERIOD=14,
-        MIN_TAU=5.0,
-        MAX_TAU=20.0
+        MIN_TAU=2.0,  # Allows tighter ranges in low volatility
+        MAX_TAU=20.0,  # Allows wider ranges in high volatility
+        HISTORY_LENGTH=50  # Enough history for trend analysis
     )
     
     DistributionTauStrategy.token0_decimals = token0_decimals
@@ -118,8 +119,9 @@ if __name__ == '__main__':
     DistributionTauStrategy.tick_spacing = 60
     strategy = DistributionTauStrategy(debug=True, params=params)
     
-    start_time = datetime(2024, 1, 1, tzinfo=UTC)
-    end_time = datetime(2024, 3, 1, tzinfo=UTC)
+    # Adjusted time range for better data coverage
+    start_time = datetime(2024, 1, 11, tzinfo=UTC)
+    end_time = datetime(2025, 1, 11, tzinfo=UTC)  # Reduced to 1 month for faster testing
     
     observations = build_distribution_observations(
         ticker=ticker,
@@ -128,14 +130,20 @@ if __name__ == '__main__':
         start_time=start_time,
         end_time=end_time,
         fidelity='hour',
-        min_volume=1000.0
+        min_volume=100.0  # Reduced from 1000.0 to include more data points
     )
     
+    if not observations:
+        raise ValueError("No observations loaded")
+        
+    print(f"Loaded {len(observations)} observations")
     
-
-    strategy = DistributionTauStrategy(debug=True, params=params)
     result = strategy.run(observations)
 
+    print("\nStrategy Metrics:")
     print(result.get_default_metrics())
+    
+    # Save results
     result.to_dataframe().to_csv('distribution_tau_strategy_result.csv')
+    print("\nFinal State:")
     print(result.to_dataframe().iloc[-1])

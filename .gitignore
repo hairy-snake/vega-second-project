@@ -1,4 +1,5 @@
 .env
+mlartifacts
 mlruns
 runs
 fractal_data

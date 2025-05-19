@@ -94,7 +94,7 @@ if __name__ == '__main__':
     entities = strategy.get_all_available_entities().keys()
     observations: List[Observation] = build_observations(
         ticker=ticker, pool_address=pool_address, api_key=THE_GRAPH_API_KEY,
-        start_time=datetime(2024, 1, 11, tzinfo=UTC), end_time=datetime(2025, 2, 11, tzinfo=UTC),
+        start_time=datetime(2024, 1, 11, tzinfo=UTC), end_time=datetime(2025, 1, 11, tzinfo=UTC),
         fidelity='hour'
     )
     observation0 = observations[0]

@@ -20,7 +20,7 @@ def build_grid():
         'MIN_TAU': [5.0],
         'MAX_TAU': [20.0],
         'ATR_PERIOD': [14, 24],
-        'TAU_SCALING_FACTOR': [1.2, 1.5, 1.8],
+        'TAU_SCALING_FACTOR': [1.2, 1.5, 1.8, 2.0],
         'INITIAL_BALANCE': [1_000_000]
     })
 

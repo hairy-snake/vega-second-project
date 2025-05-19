@@ -35,7 +35,7 @@ if __name__ == '__main__':
         THE_GRAPH_API_KEY, loader_type=LoaderType.CSV).get_pool_decimals(pool_address)
 
     # Init the strategy
-    params: TimedTauResetParams = TimedTauResetParams(TAU=10, INITIAL_BALANCE=1_000_000)
+    params: TimedTauResetParams = TimedTauResetParams(TAU=14, EMERGENCY_REBALANCE_THRESHOLD=1.7, REBALANCE_DELTA=500, EMA_PERIOD=30, INITIAL_BALANCE=1_000_000)
     TimedTauResetStrategy.token0_decimals = token0_decimals
     TimedTauResetStrategy.token1_decimals = token1_decimals
     TimedTauResetStrategy.tick_spacing = 60
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     entities = strategy.get_all_available_entities().keys()
     observations: List[Observation] = build_observations(
         ticker=ticker, pool_address=pool_address, api_key=THE_GRAPH_API_KEY,
-        start_time=datetime(2025, 1, 11, tzinfo=UTC), end_time=datetime(2025, 2, 11, tzinfo=UTC),
+        start_time=datetime(2024, 1, 11, tzinfo=UTC), end_time=datetime(2025, 1, 11, tzinfo=UTC),
         fidelity='hour'
     )
     observation0 = observations[0]

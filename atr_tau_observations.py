@@ -34,7 +34,7 @@ if __name__ == '__main__':
         THE_GRAPH_API_KEY, loader_type=LoaderType.CSV).get_pool_decimals(pool_address)
 
     # Init the strategy
-    params: ATRTauResetParams = ATRTauResetParams(TAU=10, INITIAL_BALANCE=1_000_000)
+    params: ATRTauResetParams = ATRTauResetParams(TAU=10, INITIAL_BALANCE=1_000_000, TAU_SCALING_FACTOR=1.8, MIN_TAU=5.0, MAX_TAU=20.0, ATR_PERIOD=24)
     ATRTauResetStrategy.token0_decimals = token0_decimals
     ATRTauResetStrategy.token1_decimals = token1_decimals
     ATRTauResetStrategy.tick_spacing = 60
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     entities = strategy.get_all_available_entities().keys()
     observations: List[Observation] = build_observations(
         ticker=ticker, pool_address=pool_address, api_key=THE_GRAPH_API_KEY,
-        start_time=datetime(2024, 1, 11, tzinfo=UTC), end_time=datetime(2025, 2, 11, tzinfo=UTC),
+        start_time=datetime(2024, 1, 11, tzinfo=UTC), end_time=datetime(2025, 1, 11, tzinfo=UTC),
         fidelity='hour'
     )
     observation0 = observations[0]
